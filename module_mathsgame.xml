@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_mathsgame" default="compile.module.mathsgame">
+  <dirname property="module.mathsgame.basedir" file="${ant.file.module_mathsgame}"/>
+  
+  <property name="module.jdk.home.mathsgame" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.mathsgame" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.mathsgame" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.mathsgame" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="mathsgame.output.dir" value="${module.mathsgame.basedir}/out/production/MathsGame"/>
+  <property name="mathsgame.testoutput.dir" value="${module.mathsgame.basedir}/out/test/MathsGame"/>
+  
+  <path id="mathsgame.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="mathsgame.module.production.classpath">
+    <path refid="${module.jdk.classpath.mathsgame}"/>
+  </path>
+  
+  <path id="mathsgame.runtime.production.module.classpath">
+    <pathelement location="${mathsgame.output.dir}"/>
+  </path>
+  
+  <path id="mathsgame.module.classpath">
+    <path refid="${module.jdk.classpath.mathsgame}"/>
+    <pathelement location="${mathsgame.output.dir}"/>
+  </path>
+  
+  <path id="mathsgame.runtime.module.classpath">
+    <pathelement location="${mathsgame.testoutput.dir}"/>
+    <pathelement location="${mathsgame.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.mathsgame">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.mathsgame">
+    <patternset refid="excluded.from.module.mathsgame"/>
+  </patternset>
+  
+  <path id="mathsgame.module.sourcepath">
+    <dirset dir="${module.mathsgame.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.mathsgame" depends="compile.module.mathsgame.production,compile.module.mathsgame.tests" description="Compile module MathsGame"/>
+  
+  <target name="compile.module.mathsgame.production" depends="register.custom.compilers" description="Compile module MathsGame; production classes">
+    <mkdir dir="${mathsgame.output.dir}"/>
+    <javac2 destdir="${mathsgame.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.mathsgame}/javac">
+      <compilerarg line="${compiler.args.mathsgame}"/>
+      <bootclasspath refid="mathsgame.module.bootclasspath"/>
+      <classpath refid="mathsgame.module.production.classpath"/>
+      <src refid="mathsgame.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.mathsgame"/>
+    </javac2>
+    
+    <copy todir="${mathsgame.output.dir}">
+      <fileset dir="${module.mathsgame.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.mathsgame.tests" depends="register.custom.compilers,compile.module.mathsgame.production" description="compile module MathsGame; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.mathsgame" description="cleanup module">
+    <delete dir="${mathsgame.output.dir}"/>
+    <delete dir="${mathsgame.testoutput.dir}"/>
+  </target>
+</project>
